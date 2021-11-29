@@ -5,27 +5,129 @@ namespace EnvDev
 {
     public static class TransformTweenExt
     {
-        #region Local Rotation
+        #region Local Angles
 
-        public static Tween TweenLocalRotationBy(this Transform rectTransform, Vector3 targetRotation,
+        #region X
+
+        public static Tween TweenLocalAnglesXTo(this Transform transform, float to, float duration,
+            Func<double, double> easeFunc)
+        {
+            var from = transform.localEulerAngles.x;
+            return TweenLocalAnglesX(transform, from, to, duration, easeFunc);
+        }
+        
+        public static Tween TweenLocalAnglesX(this Transform transform, float from,
+            float to, float duration, Func<double, double> easeFunc)
+        {
+            return new Tween(
+                t =>
+                {
+                    var x = Mathf.LerpAngle(from, to, t);
+                    var angles = transform.localEulerAngles;
+                    angles.x = x;
+                    transform.localEulerAngles = angles;
+                },
+                duration,
+                easeFunc);
+        }
+
+        #endregion
+        
+        #region Y
+
+        public static Tween TweenLocalAnglesYTo(this Transform transform, float to, float duration,
+            Func<double, double> easeFunc)
+        {
+            var from = transform.localEulerAngles.y;
+            return TweenLocalAnglesY(transform, from, to, duration, easeFunc);
+        }
+        
+        public static Tween TweenLocalAnglesY(this Transform transform, float from,
+            float to, float duration, Func<double, double> easeFunc)
+        {
+            return new Tween(
+                t =>
+                {
+                    var y = Mathf.LerpAngle(from, to, t);
+                    var angles = transform.localEulerAngles;
+                    angles.y = y;
+                    transform.localEulerAngles = angles;
+                },
+                duration,
+                easeFunc);
+        }
+
+        #endregion
+        
+        
+        #region Z
+
+        public static Tween TweenLocalAnglesZTo(this Transform transform, float to, float duration,
+            Func<double, double> easeFunc)
+        {
+            var from = transform.localEulerAngles.z;
+            return TweenLocalAnglesZ(transform, from, to, duration, easeFunc);
+        }
+        
+        public static Tween TweenLocalAnglesZ(this Transform transform, float from,
+            float to, float duration, Func<double, double> easeFunc)
+        {
+            return new Tween(
+                t =>
+                {
+                    var z = Mathf.LerpAngle(from, to, t);
+                    var angles = transform.localEulerAngles;
+                    angles.z = z;
+                    transform.localEulerAngles = angles;
+                },
+                duration,
+                easeFunc);
+        }
+
+        #endregion
+        
+        public static Tween TweenLocalAnglesBy(this Transform rectTransform, Vector3 from,
+            float duration, Func<double, double> easeFunc)
+        {
+            var to = rectTransform.localEulerAngles;
+            return TweenLocalAngles(rectTransform, to, to + @from, duration, easeFunc);
+        }
+
+        public static Tween TweenLocalAnglesTo(this Transform rectTransform, Vector3 targetRotation,
             float duration, Func<double, double> easeFunc)
         {
             var startRotation = rectTransform.localEulerAngles;
-            return TweenLocalRotation(rectTransform, startRotation, startRotation + targetRotation, duration, easeFunc);
+            return TweenLocalAngles(rectTransform, startRotation, targetRotation, duration, easeFunc);
         }
 
-        public static Tween TweenLocalRotationTo(this Transform rectTransform, Vector3 targetRotation,
-            float duration, Func<double, double> easeFunc)
-        {
-            var startRotation = rectTransform.localEulerAngles;
-            return TweenLocalRotation(rectTransform, startRotation, targetRotation, duration, easeFunc);
-        }
-
-        public static Tween TweenLocalRotation(this Transform rectTransform, Vector3 startRotation,
+        public static Tween TweenLocalAngles(this Transform rectTransform, Vector3 startRotation,
             Vector3 targetRotation, float duration, Func<double, double> easeFunc)
         {
             return new Tween(
                 t => { rectTransform.localEulerAngles = Vector3.LerpUnclamped(startRotation, targetRotation, t); },
+                duration,
+                easeFunc);
+        }
+        
+        #endregion
+
+        #region Local Rotation
+        
+        public static Tween TweenLocalRotationTo(this Transform rectTransform, Quaternion to,
+            float duration, Func<double, double> easeFunc)
+        {
+            var from = rectTransform.localRotation;
+            return TweenLocalRotation(rectTransform, from, to, duration, easeFunc);
+        }
+
+        public static Tween TweenLocalRotation(this Transform rectTransform, Quaternion from,
+            Quaternion to, float duration, Func<double, double> easeFunc)
+        {
+            return new Tween(
+                t =>
+                {
+                    rectTransform.localRotation = Quaternion.SlerpUnclamped(from, to, t);
+                },
                 duration,
                 easeFunc);
         }
