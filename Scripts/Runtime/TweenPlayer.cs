@@ -41,6 +41,7 @@ namespace EnvDev
         public void Stop()
         {
             m_TweenCount = 0;
+            Stopped?.Invoke();
         }
 
         public void Update(float dt)
