@@ -1,0 +1,17 @@
+{
+    "name": "com.envdev.envtween",
+    "version": "1.0.0-preview",
+    "displayName": "Env Tween",
+    "description": "A simple tweening library",
+    "keywords": [
+      "Tween",
+      "Tweening",
+      "UI"
+    ],
+    "author": {
+      "name": "Evgeny Vasilyev",
+      "email": "zeejfps@gmail.com",
+      "url": "https://www.evasilyev.com"
+    },
+    "type": "library"
+  }
