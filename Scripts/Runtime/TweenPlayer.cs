@@ -41,6 +41,7 @@ namespace EnvDev
         public void Stop()
         {
             m_TweenCount = 0;
+            m_ThenAction = null;
             Stopped?.Invoke();
         }
 
