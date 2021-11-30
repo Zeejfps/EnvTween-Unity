@@ -22,7 +22,7 @@ namespace EnvDev
             return new Tween(
                 t =>
                 {
-                    var x = Mathf.LerpAngle(from, to, t);
+                    var x = LerpAngleUnclamped(from, to, t);
                     var angles = transform.localEulerAngles;
                     angles.x = x;
                     transform.localEulerAngles = angles;
@@ -48,7 +48,7 @@ namespace EnvDev
             return new Tween(
                 t =>
                 {
-                    var y = Mathf.LerpAngle(from, to, t);
+                    var y = LerpAngleUnclamped(from, to, t);
                     var angles = transform.localEulerAngles;
                     angles.y = y;
                     transform.localEulerAngles = angles;
@@ -75,7 +75,7 @@ namespace EnvDev
             return new Tween(
                 t =>
                 {
-                    var z = Mathf.LerpAngle(from, to, t);
+                    var z = LerpAngleUnclamped(from, to, t);
                     var angles = transform.localEulerAngles;
                     angles.z = z;
                     transform.localEulerAngles = angles;
@@ -104,9 +104,17 @@ namespace EnvDev
             Vector3 targetRotation, float duration, Func<double, double> easeFunc)
         {
             return new Tween(
-                t => { rectTransform.localEulerAngles = Vector3.LerpUnclamped(startRotation, targetRotation, t); },
+                t => { rectTransform.localEulerAngles = Vector3.SlerpUnclamped(startRotation, targetRotation, t); },
                 duration,
                 easeFunc);
+        }
+        
+        public static float LerpAngleUnclamped(float a, float b, float t)
+        {
+            var num = Mathf.Repeat(b - a, 360f);
+            if (num > 180.0)
+                num -= 360f;
+            return a + num * t;
         }
         
         #endregion
