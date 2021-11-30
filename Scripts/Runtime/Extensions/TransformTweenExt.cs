@@ -245,30 +245,57 @@ namespace EnvDev
 
         #region Local Scale
 
-        public static Tween TweenLocalScaleTo(this Transform rectTransform, float targetValue, float duration,
+        #region Y
+
+        public static Tween TweenLocalScaleYTo(this Transform transform, float to, float duration,
             Func<double, double> easeFunc)
         {
-            var startValue = rectTransform.localScale;
+            var from = transform.localScale.y;
+            return TweenLocalScaleY(transform, from, to, duration, easeFunc);
+        }
+        
+        public static Tween TweenLocalScaleY(this Transform transform, float from, float to, float duration,
+            Func<double, double> easeFunc)
+        {
+            return new Tween(t =>
+            {
+                var localScale = transform.localScale;
+                localScale.y = Mathf.LerpUnclamped(from, to, t);
+                transform.localScale = localScale;
+            }, duration, easeFunc);
+        }
+
+        #endregion
+        
+        public static Tween TweenLocalScaleUniformlyTo(this Transform transform, float targetValue, float duration,
+            Func<double, double> easeFunc)
+        {
+            var startValue = transform.localScale;
             var targetScale = new Vector3(targetValue, targetValue, targetValue);
-            return TweenLocalScale(rectTransform, startValue, targetScale, duration, easeFunc);
+            return TweenLocalScale(transform, startValue, targetScale, duration, easeFunc);
         }
 
-        public static Tween TweenLocalScale(this Transform rectTransform, Vector3 targetScale, float duration,
+        public static Tween TweenLocalScaleTo(this Transform transform, Vector3 targetScale, float duration,
             Func<double, double> easeFunc)
         {
-            var startValue = rectTransform.localScale;
-            return TweenLocalScale(rectTransform, startValue, targetScale, duration, easeFunc);
+            var startValue = transform.localScale;
+            return TweenLocalScale(transform, startValue, targetScale, duration, easeFunc);
         }
 
-        public static Tween TweenLocalScale(this Transform rectTransform, Vector3 startScale, Vector3 targetScale,
+        public static Tween TweenLocalScale(this Transform transform, Vector3 from, Vector3 to,
             float duration, Func<double, double> easeFunc)
         {
-            return new Tween(t => { rectTransform.localScale = Vector3.LerpUnclamped(startScale, targetScale, t); },
-                duration, easeFunc);
+            return new Tween(t =>
+            {
+                transform.localScale = Vector3.LerpUnclamped(from, to, t);
+            },
+            duration, easeFunc);
         }
 
         #endregion
 
+        #region Rotation
+        
         public static Tween TweenRotationTo(this Transform transform, Quaternion to, float duration,
             Func<double, double> easeFunc)
         {
@@ -276,12 +303,17 @@ namespace EnvDev
             return new Tween(t => { transform.rotation = Quaternion.LerpUnclamped(from, to, t); }, duration, easeFunc);
         }
 
+        #endregion
+
+        #region Angles
+        
         public static Tween TweenAngles(this Transform transform, Vector3 from, Vector3 to, float duration,
             Func<double, double> easeFunc)
         {
             return new Tween(t => { transform.eulerAngles = Vector3.LerpUnclamped(from, to, t); }, duration, easeFunc);
         }
 
+        #endregion
 
         #region Position
 
