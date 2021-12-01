@@ -14,5 +14,10 @@ namespace EnvDev
             Duration = duration;
             Ease = easeFunc;
         }
+
+        public static Tween Wait(float seconds)
+        {
+            return new Tween(t => { }, seconds, d => d);
+        }
     }
 }
