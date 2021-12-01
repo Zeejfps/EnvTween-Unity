@@ -17,7 +17,9 @@ namespace EnvDev
                     {
                         hideFlags = HideFlags.HideAndDontSave
                     };
-                    DontDestroyOnLoad(go);
+                    
+                    if (Application.isPlaying)
+                        DontDestroyOnLoad(go);
                     s_Instance = go.AddComponent<TweenPlayerManager>();
                 }
 
