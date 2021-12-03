@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace EnvDev
 {
@@ -29,6 +30,31 @@ namespace EnvDev
         {
             return new Tween(t => { }, seconds, d => d);
         }
+        
+        public static Tween Group(params Tween[] tweens)
+        {
+            var maxDuration = 0f;
+            for (var i = 0; i < tweens.Length; i++)
+            {
+                var tween = tweens[i];
+                var duration = tween.Duration;
+                if (duration > maxDuration)
+                    maxDuration = duration;
+            }
+
+            return new Tween(t =>
+            {
+                var tweenCount = tweens.Length;
+                for (var i = 0; i < tweenCount; i++)
+                {
+                    var tween = tweens[i];
+                    var min = 0f;
+                    var max = tween.Duration / maxDuration;
+                    var relativeT = InverseLerp(min, max, t);
+                    tween.Lerp((float)tween.Ease(relativeT));
+                }
+            }, maxDuration, d => d);
+        }
 
         public static Tween Sequence(Tween tween, Func<Tween> playNext)
         {
@@ -50,5 +76,8 @@ namespace EnvDev
             
             return new Tween(startTween.Lerp, startTween.Duration, startTween.Ease, () => Sequence(sequence, nextStartTweenIndex));
         }
+
+        static float InverseLerp(float a, float b, float value) => (value - a) / (b - a);
+
     }
 }
