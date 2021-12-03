@@ -155,81 +155,90 @@ namespace EnvDev
 
         #region X
 
-        public static Tween TweenLocalX(this Transform rectTransform, float startX, float targetX,
-            float duration, Func<double, double> easeFunc)
-        {
-            var startPosition = rectTransform.localPosition;
-            startPosition.x = startX;
-
-            var targetPosition = startPosition;
-            targetPosition.x = targetX;
-
-            return TweenLocalPosition(rectTransform, startPosition, targetPosition, duration, easeFunc);
-        }
-
-        public static Tween TweenLocalXTo(this Transform rectTransform, float targetX, float duration,
+        public static Tween TweenLocalPositionXBy(this Transform rectTransform, float deltaX, float duration,
             Func<double, double> easeFunc)
         {
-            var startPosition = rectTransform.localPosition;
+            var from = rectTransform.localPosition.x;
+            var to = from + deltaX;
+            return TweenLocalPositionX(rectTransform, from, to, duration, easeFunc);
+        }
+        
+        public static Tween TweenLocalPositionXTo(this Transform rectTransform, float targetX, float duration,
+            Func<double, double> easeFunc)
+        {
+            var from = rectTransform.localPosition.x;
+            return TweenLocalPositionX(rectTransform, from, targetX, duration, easeFunc);
+        }
 
-            var targetPosition = startPosition;
-            targetPosition.x = targetX;
-
-            return TweenLocalPosition(rectTransform, startPosition, targetPosition, duration, easeFunc);
+        public static Tween TweenLocalPositionX(this Transform transform, float startX, float targetX,
+            float duration, Func<double, double> easeFunc)
+        {
+            return new Tween(t =>
+            {
+                var localPosition = transform.localPosition;
+                localPosition.x = Mathf.LerpUnclamped(startX, targetX, t);
+                transform.localPosition = localPosition;
+            }, duration, easeFunc);
         }
 
         #endregion
 
         #region Y
 
-        public static Tween TweenLocalY(this Transform rectTransform, float startY, float targetY,
-            float duration, Func<double, double> easeFunc)
-        {
-            var startPosition = rectTransform.localPosition;
-            startPosition.y = startY;
-
-            var targetPosition = startPosition;
-            targetPosition.y = targetY;
-
-            return TweenLocalPosition(rectTransform, startPosition, targetPosition, duration, easeFunc);
-        }
-
-        public static Tween TweenLocalYTo(this Transform rectTransform, float targetY, float duration,
+        public static Tween TweenLocalPositionYBy(this Transform rectTransform, float deltaY, float duration,
             Func<double, double> easeFunc)
         {
-            var startPosition = rectTransform.localPosition;
+            var from = rectTransform.localPosition.y;
+            var to = from + deltaY;
+            return TweenLocalPositionY(rectTransform, from, to, duration, easeFunc);
+        }
+        
+        public static Tween TweenLocalPositionYTo(this Transform rectTransform, float targetY, float duration,
+            Func<double, double> easeFunc)
+        {
+            var from = rectTransform.localPosition.y;
+            return TweenLocalPositionY(rectTransform, from, targetY, duration, easeFunc);
+        }
 
-            var targetPosition = startPosition;
-            targetPosition.y = targetY;
-
-            return TweenLocalPosition(rectTransform, startPosition, targetPosition, duration, easeFunc);
+        public static Tween TweenLocalPositionY(this Transform transform, float startY, float targetY,
+            float duration, Func<double, double> easeFunc)
+        {
+            return new Tween(t =>
+            {
+                var localPosition = transform.localPosition;
+                localPosition.y = Mathf.LerpUnclamped(startY, targetY, t);
+                transform.localPosition = localPosition;
+            }, duration, easeFunc);
         }
 
         #endregion
 
         #region Z
 
-        public static Tween TweenLocalZ(this Transform rectTransform, float startZ, float targetZ,
-            float duration, Func<double, double> easeFunc)
-        {
-            var startPosition = rectTransform.localPosition;
-            startPosition.z = startZ;
-
-            var targetPosition = startPosition;
-            targetPosition.z = targetZ;
-
-            return TweenLocalPosition(rectTransform, startPosition, targetPosition, duration, easeFunc);
-        }
-
-        public static Tween TweenLocalZTo(this Transform rectTransform, float targetZ, float duration,
+        public static Tween TweenLocalPositionZBy(this Transform rectTransform, float deltaZ, float duration,
             Func<double, double> easeFunc)
         {
-            var startPosition = rectTransform.localPosition;
+            var from = rectTransform.localPosition.z;
+            var to = from + deltaZ;
+            return TweenLocalPositionZ(rectTransform, from, to, duration, easeFunc);
+        }
+        
+        public static Tween TweenLocalPositionZTo(this Transform rectTransform, float targetZ, float duration,
+            Func<double, double> easeFunc)
+        {
+            var from = rectTransform.localPosition.z;
+            return TweenLocalPositionZ(rectTransform, from, targetZ, duration, easeFunc);
+        }
 
-            var targetPosition = startPosition;
-            targetPosition.z = targetZ;
-
-            return TweenLocalPosition(rectTransform, startPosition, targetPosition, duration, easeFunc);
+        public static Tween TweenLocalPositionZ(this Transform transform, float startZ, float targetZ,
+            float duration, Func<double, double> easeFunc)
+        {
+            return new Tween(t =>
+            {
+                var localPosition = transform.localPosition;
+                localPosition.z = Mathf.LerpUnclamped(startZ, targetZ, t);
+                transform.localPosition = localPosition;
+            }, duration, easeFunc);
         }
 
         #endregion
