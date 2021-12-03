@@ -61,15 +61,23 @@ namespace EnvDev
                 if (runtime >= duration)
                 {
                     tween.Lerp(1f);
+                    if (tween.Next != null)
+                    {
+                        m_Tweens[i] = tween.Next();
+                        m_Runtimes[i] = 0f;
+                    }
+                    else
+                    {
+                        // Swap the last tween with this one
+                        var lastTweenIndex = m_TweenCount - 1;
 
-                    // Swap the last tween with this one
-                    var lastTweenIndex = m_TweenCount - 1;
+                        m_Tweens[i] = m_Tweens[lastTweenIndex];
+                        m_Runtimes[i] = m_Runtimes[lastTweenIndex];
 
-                    m_Tweens[i] = m_Tweens[lastTweenIndex];
-                    m_Runtimes[i] = m_Runtimes[lastTweenIndex];
-
-                    // Lower the tween count, but DO NOT increment i
-                    m_TweenCount--;
+                        // Lower the tween count, but DO NOT increment i
+                        m_TweenCount--;
+                    }
+                 
                     continue;
                 }
 

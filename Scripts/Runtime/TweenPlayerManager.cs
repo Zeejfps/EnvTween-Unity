@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace EnvDev
@@ -45,8 +44,7 @@ namespace EnvDev
         {
             if (s_Instance != null && s_Instance != this)
             {
-                Debug.LogWarning("Duplicate [Tween Player Manager] found! Destroying");
-                Destroy(this);
+                Debug.LogWarning("Duplicate [Tween Player Manager] found!");
             }
         }
 

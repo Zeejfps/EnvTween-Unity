@@ -35,6 +35,14 @@ namespace EnvDev
         
         #region Y
 
+        public static Tween TweenLocalAnglesYBy(this Transform transform, float delta, float duration,
+            Func<double, double> easeFunc)
+        {
+            var from = transform.localEulerAngles.y;
+            var to = from + delta;
+            return TweenLocalAnglesY(transform, from, to, duration, easeFunc);
+        }
+        
         public static Tween TweenLocalAnglesYTo(this Transform transform, float to, float duration,
             Func<double, double> easeFunc)
         {
@@ -86,11 +94,12 @@ namespace EnvDev
 
         #endregion
         
-        public static Tween TweenLocalAnglesBy(this Transform rectTransform, Vector3 from,
+        public static Tween TweenLocalAnglesBy(this Transform rectTransform, Vector3 delta,
             float duration, Func<double, double> easeFunc)
         {
-            var to = rectTransform.localEulerAngles;
-            return TweenLocalAngles(rectTransform, to, to + @from, duration, easeFunc);
+            var from = rectTransform.localEulerAngles;
+            var to = from + delta;
+            return TweenLocalAngles(rectTransform, from, to, duration, easeFunc);
         }
 
         public static Tween TweenLocalAnglesTo(this Transform rectTransform, Vector3 targetRotation,
