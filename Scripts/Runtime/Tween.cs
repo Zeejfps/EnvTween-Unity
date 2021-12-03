@@ -34,7 +34,8 @@ namespace EnvDev
         public static Tween Group(params Tween[] tweens)
         {
             var maxDuration = 0f;
-            for (var i = 0; i < tweens.Length; i++)
+            var tweenCount = tweens.Length;
+            for (var i = 0; i < tweenCount; i++)
             {
                 var tween = tweens[i];
                 var duration = tween.Duration;
@@ -44,13 +45,32 @@ namespace EnvDev
 
             return new Tween(t =>
             {
-                var tweenCount = tweens.Length;
                 for (var i = 0; i < tweenCount; i++)
                 {
                     var tween = tweens[i];
                     var min = 0f;
                     var max = tween.Duration / maxDuration;
                     var relativeT = InverseLerp(min, max, t);
+                    if (relativeT > 1f)
+                    {
+                        if (tween.Next != null)
+                        {
+                            tweens[i] = tween.Next();
+                        }
+                        else
+                        {
+                            // Swap the last tween with this one
+                            var lastTweenIndex = tweenCount - 1;
+
+                            tweens[i] = tweens[lastTweenIndex];
+
+                            // Lower the tween count, but DO NOT increment i
+                            tweenCount--;
+                        }
+                        
+                        continue;
+                    }
+                    
                     tween.Lerp((float)tween.Ease(relativeT));
                 }
             }, maxDuration, d => d);
