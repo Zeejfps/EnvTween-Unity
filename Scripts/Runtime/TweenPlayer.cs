@@ -1,108 +1,115 @@
 using System;
+using UnityEngine;
 
 namespace EnvDev
 {
-    public class TweenPlayer
+    public class TweenPlayer : MonoBehaviour
     {
-        public bool IsPlaying => m_TweenCount > 0;
-
-        public event Action Stopped;
+        const int k_MaxTweenCount = 1024;
+        
+        static TweenPlayer s_Instance;
+        public static TweenPlayer Instance
+        {
+            get
+            {
+                if (s_Instance == null)
+                {
+                    var go = new GameObject("[Tween Player]")
+                    {
+                        hideFlags = HideFlags.DontSave
+                    };
+                    s_Instance = go.AddComponent<TweenPlayer>();
+                    if (Application.isPlaying)
+                        DontDestroyOnLoad(go);
+                }
+                return s_Instance;
+            }
+        }
 
         int m_TweenCount;
-        Action m_ThenAction;
-        readonly Tween[] m_Tweens;
-        readonly float[] m_Runtimes;
-
-        public TweenPlayer(int tweenCacheSize = 16)
+        readonly Tween[] m_Tweens = new Tween[k_MaxTweenCount];
+        readonly TweenHandle[] m_Handles = new TweenHandle[k_MaxTweenCount];
+        
+        public ITweenHandle Play(Tween tween)
         {
-            m_Tweens = new Tween[tweenCacheSize];
-            m_Runtimes = new float[tweenCacheSize];
+            var tweenIndex = m_TweenCount;
+            var handle = new TweenHandle(tweenIndex);
+            m_Tweens[tweenIndex] = tween;
+            m_Handles[tweenIndex] = handle;
+            m_TweenCount++;
+            return handle;
         }
 
-        public TweenPlayer Play(params Tween[] tweens)
+        internal bool Stop(TweenHandle handle)
         {
-            var tweenCount = tweens.Length;
-            var offset = m_TweenCount;
-            for (var i = 0; i < tweenCount; i++, m_TweenCount++)
-            {
-                var index = offset + i;
-                m_Tweens[index] = tweens[i];
-                m_Runtimes[index] = 0f;
-            }
+            if (handle.TweenIndex < 0)
+                return false;
 
-            return this;
+            var i = handle.TweenIndex;
+            handle.TweenIndex = -1;
+
+            var lastTweenIndex = m_TweenCount - 1;
+            m_Tweens[i] = m_Tweens[lastTweenIndex];
+            m_Handles[i] = m_Handles[lastTweenIndex];
+            m_TweenCount--;
+            
+            return true;
         }
 
-        public void Then(Action action)
+        void Update()
         {
-            m_ThenAction = action;
-        }
-
-        public void Stop()
-        {
-            m_TweenCount = 0;
-            m_ThenAction = null;
-            Stopped?.Invoke();
-        }
-
-        public void Update(float dt)
-        {
-            if (m_TweenCount == 0)
-                return;
-
-            // i is incremented manually when needed
+            var dt = Time.deltaTime;
             for (var i = 0; i < m_TweenCount;)
             {
                 var tween = m_Tweens[i];
-                var runtime = m_Runtimes[i];
-                var duration = tween.Duration;
-
-                // We reached the end of the tween
-                if (runtime >= duration)
+                tween = tween.Update(dt);
+                if (tween.Runtime >= tween.Duration)
                 {
-                    tween.Lerp(1f);
-                    if (tween.Next != null)
-                    {
-                        m_Tweens[i] = tween.Next();
-                        m_Runtimes[i] = 0f;
-                    }
-                    else
-                    {
-                        // Swap the last tween with this one
-                        var lastTweenIndex = m_TweenCount - 1;
+                    var handle = m_Handles[i];
+                    handle.TweenIndex = -1;
 
-                        m_Tweens[i] = m_Tweens[lastTweenIndex];
-                        m_Runtimes[i] = m_Runtimes[lastTweenIndex];
+                    var lastTweenIndex = m_TweenCount - 1;
+                    m_Tweens[i] = m_Tweens[lastTweenIndex];
+                    m_Handles[i] = m_Handles[lastTweenIndex];
+                    m_TweenCount--;
 
-                        // Lower the tween count, but DO NOT increment i
-                        m_TweenCount--;
-                    }
-                 
-                    continue;
+                    handle.OnCompletedAction?.Invoke();
                 }
-
-                var t = tween.Ease(runtime / duration);
-                tween.Lerp((float)t);
-
-                m_Runtimes[i] += dt;
-
-                // NOTE: Manually incrementing i here because we don't want to increment it when we swap
-                i++;
-            }
-
-            if (m_TweenCount == 0)
-            {
-                if (m_ThenAction != null)
+                else
                 {
-                    var thenAction = m_ThenAction;
-                    m_ThenAction = null;
-                    thenAction.Invoke();
+                    m_Tweens[i] = tween;
+                    i++;
                 }
-
-                // Have to check here again in-case 'm_ThenAction' added more tweens
-                if (m_TweenCount == 0)
-                    Stopped?.Invoke();
             }
+        }
+
+        void OnDestroy()
+        {
+            s_Instance = null;
+        }
+    }
+
+    class TweenHandle : ITweenHandle
+    {
+        internal int TweenIndex;
+
+        public Action OnCompletedAction;
+        
+        public TweenHandle(int tweenIndex)
+        {
+            TweenIndex = tweenIndex;
+            OnCompletedAction = null;
+        }
+
+        public bool Stop()
+        {
+            return TweenPlayer.Instance.Stop(this);
+        }
+
+        public ITweenHandle OnCompleted(Action action)
+        {
+            OnCompletedAction = action;
+            return this;
         }
     }
 }
