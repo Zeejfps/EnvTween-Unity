@@ -42,7 +42,7 @@ namespace EnvDev
 
         internal bool Stop(TweenHandle handle)
         {
-            if (handle.TweenIndex < 0)
+            if (!handle.IsPlaying)
                 return false;
 
             var i = handle.TweenIndex;
@@ -91,10 +91,13 @@ namespace EnvDev
 
     class TweenHandle : ITweenHandle
     {
+        public bool IsPlaying => TweenIndex >= 0;
+        
         internal int TweenIndex;
 
         public Action OnCompletedAction;
-        
+
+
         public TweenHandle(int tweenIndex)
         {
             TweenIndex = tweenIndex;
