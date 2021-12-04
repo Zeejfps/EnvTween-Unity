@@ -60,8 +60,8 @@ namespace EnvDev
                 for (var tweenIndex = 0; tweenIndex < tweenCount;)
                 {
                     var tween = group[tweenIndex];
-                    var updated = tween.Update(dt);
-                    if (updated.Runtime >= updated.Duration)
+                    tween = tween.Update(dt);
+                    if (tween.Runtime >= tween.Duration)
                     {
                         var lastTweenIndex = tweenCount - 1;
                         group[tweenIndex] = group[lastTweenIndex];
@@ -69,15 +69,15 @@ namespace EnvDev
                     }
                     else
                     {
-                        if (updated.Duration > duration) duration = updated.Duration;
-            
-                        group[tweenIndex] = updated;
-            
+                        runtime = tween.Runtime;
+                        duration = tween.Duration;
+                        group[tweenIndex] = tween;
                         tweenIndex++;
                     }
                 }
             
-                if (tweenCount == 0 && self.Next != null) return self.Next();
+                if (tweenCount == 0 && self.Next != null) 
+                    return self.Next();
             
                 return new Tween(self.UpdateFunc, self.Lerp, runtime, duration, self.Ease, self.Next);
             }
