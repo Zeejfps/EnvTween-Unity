@@ -8,7 +8,15 @@ namespace EnvDev
         #region Local Angles
 
         #region X
-
+        
+        public static Tween TweenLocalAnglesXBy(this Transform transform, float delta, float duration,
+            Func<double, double> easeFunc)
+        {
+            var from = transform.localEulerAngles.x;
+            var to = from + delta;
+            return TweenLocalAnglesX(transform, from, to, duration, easeFunc);
+        }
+        
         public static Tween TweenLocalAnglesXTo(this Transform transform, float to, float duration,
             Func<double, double> easeFunc)
         {
