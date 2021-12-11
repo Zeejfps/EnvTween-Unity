@@ -348,30 +348,5 @@ namespace EnvDev
         }
 
         #endregion
-
-        #region Position
-
-        public static Tween TweenPositionBy(this Transform transform, Vector3 delta, float duration,
-            Func<double, double> easeFunc)
-        {
-            var from = transform.position;
-            var to = from + delta;
-            return TweenPosition(transform, from, to, duration, easeFunc);
-        }
-
-        public static Tween TweenPositionTo(this Transform transform, Vector3 to, float duration,
-            Func<double, double> easeFunc)
-        {
-            var from = transform.position;
-            return TweenPosition(transform, from, to, duration, easeFunc);
-        }
-
-        public static Tween TweenPosition(this Transform transform, Vector3 from, Vector3 to, float duration,
-            Func<double, double> easeFunc)
-        {
-            return new Tween(t => { transform.position = Vector3.LerpUnclamped(from, to, t); }, duration, easeFunc);
-        }
-
-        #endregion
     }
 }
