@@ -79,6 +79,14 @@ namespace EnvDev
 
         private void Awake()
         {
+            if (s_Instance != null && s_Instance != this)
+            {
+                Debug.LogWarning("Only one TweenPlayer is supported");
+                Destroy(this);
+                return;
+            }
+            
+            s_Instance = this;
             m_Tweens = new Tween[m_MaxTweenCount];
             m_Handles = new TweenHandle[m_MaxTweenCount];
         }
