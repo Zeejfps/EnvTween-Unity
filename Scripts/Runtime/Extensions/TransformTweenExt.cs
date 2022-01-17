@@ -258,6 +258,13 @@ namespace EnvDev
             var targetPosition = startPosition + deltaPosition;
             return TweenLocalPosition(rectTransform, startPosition, targetPosition, duration, easeFunc);
         }
+        
+        public static Tween TweenLocalPositionFrom(this Transform rectTransform, Vector3 startPosition,
+            float duration, Func<double, double> easeFunc)
+        {
+            var targetPosition = rectTransform.localPosition;
+            return TweenLocalPosition(rectTransform, startPosition, targetPosition, duration, easeFunc);
+        }
 
         public static Tween TweenLocalPositionTo(this Transform rectTransform, Vector3 targetPosition,
             float duration, Func<double, double> easeFunc)
