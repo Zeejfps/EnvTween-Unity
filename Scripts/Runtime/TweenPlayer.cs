@@ -5,7 +5,7 @@ namespace EnvDev
 {
     public class TweenPlayer : MonoBehaviour
     {
-        const int k_MaxTweenCount = 1024;
+        [SerializeField] private int m_MaxTweenCount = 1024;
         
         static TweenPlayer s_Instance;
         public static TweenPlayer Instance
@@ -27,12 +27,17 @@ namespace EnvDev
         }
 
         int m_TweenCount;
-        readonly Tween[] m_Tweens = new Tween[k_MaxTweenCount];
-        readonly TweenHandle[] m_Handles = new TweenHandle[k_MaxTweenCount];
+        Tween[] m_Tweens;
+        TweenHandle[] m_Handles;
         
         public ITweenHandle Play(Tween tween)
         {
             var tweenIndex = m_TweenCount;
+            if (tweenIndex >= m_MaxTweenCount)
+            {
+                Debug.LogWarning("Max Tween Count Reached! Please adjust the value if you require more tweens.");
+                return new TweenHandle(-1);
+            }
             var handle = new TweenHandle(tweenIndex);
             m_Tweens[tweenIndex] = tween;
             m_Handles[tweenIndex] = handle;
@@ -70,6 +75,12 @@ namespace EnvDev
             m_Tweens[tweenIndex] = m_Tweens[lastTweenIndex];
             m_Handles[tweenIndex] = lastTweenHandle;
             m_TweenCount--;
+        }
+
+        private void Awake()
+        {
+            m_Tweens = new Tween[m_MaxTweenCount];
+            m_Handles = new TweenHandle[m_MaxTweenCount];
         }
 
         void Update()
