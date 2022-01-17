@@ -54,8 +54,11 @@ namespace EnvDev
 
         void StopTween(int tweenIndex)
         {
+            if (tweenIndex >= m_TweenCount)
+                return;
+
             var lastTweenIndex = m_TweenCount - 1;
-            if (lastTweenIndex <= 0 || lastTweenIndex == tweenIndex)
+            if (m_TweenCount == 1 || lastTweenIndex == tweenIndex)
             {
                 m_TweenCount--;
                 return;
