@@ -55,6 +55,8 @@ namespace EnvDev
         void StopTween(int tweenIndex)
         {
             var lastTweenIndex = m_TweenCount - 1;
+            if (lastTweenIndex < 0)
+                return;
 
             var lastTweenHandle = m_Handles[lastTweenIndex];
             lastTweenHandle.TweenIndex = tweenIndex;
