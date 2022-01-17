@@ -45,15 +45,23 @@ namespace EnvDev
             if (!handle.IsPlaying)
                 return false;
 
-            var i = handle.TweenIndex;
+            var tweenIndex = handle.TweenIndex;
             handle.TweenIndex = -1;
-
-            var lastTweenIndex = m_TweenCount - 1;
-            m_Tweens[i] = m_Tweens[lastTweenIndex];
-            m_Handles[i] = m_Handles[lastTweenIndex];
-            m_TweenCount--;
+            StopTween(tweenIndex);
             
             return true;
+        }
+
+        void StopTween(int tweenIndex)
+        {
+            var lastTweenIndex = m_TweenCount - 1;
+
+            var lastTweenHandle = m_Handles[lastTweenIndex];
+            lastTweenHandle.TweenIndex = tweenIndex;
+            
+            m_Tweens[tweenIndex] = m_Tweens[lastTweenIndex];
+            m_Handles[tweenIndex] = lastTweenHandle;
+            m_TweenCount--;
         }
 
         void Update()
@@ -68,10 +76,7 @@ namespace EnvDev
                     var handle = m_Handles[i];
                     handle.TweenIndex = -1;
 
-                    var lastTweenIndex = m_TweenCount - 1;
-                    m_Tweens[i] = m_Tweens[lastTweenIndex];
-                    m_Handles[i] = m_Handles[lastTweenIndex];
-                    m_TweenCount--;
+                    StopTween(i);
 
                     handle.OnCompletedAction?.Invoke();
                 }
