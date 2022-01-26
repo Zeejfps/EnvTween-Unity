@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace EnvDev
 {
+    [DefaultExecutionOrder(-100)]
     public class TweenPlayer : MonoBehaviour
     {
         [SerializeField] private int m_MaxTweenCount = 1024;
