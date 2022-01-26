@@ -14,13 +14,15 @@ namespace EnvDev
             {
                 if (s_Instance == null)
                 {
-                    var go = new GameObject("[Tween Player]")
+                    s_Instance = FindObjectOfType<TweenPlayer>();
+                    if (s_Instance == null)
                     {
-                        hideFlags = HideFlags.DontSave
-                    };
-                    s_Instance = go.AddComponent<TweenPlayer>();
-                    if (Application.isPlaying)
-                        DontDestroyOnLoad(go);
+                        var go = new GameObject("[Tween Player]")
+                        {
+                            hideFlags = HideFlags.DontSave
+                        };
+                        s_Instance = go.AddComponent<TweenPlayer>();
+                    }
                 }
                 return s_Instance;
             }
@@ -89,6 +91,9 @@ namespace EnvDev
             s_Instance = this;
             m_Tweens = new Tween[m_MaxTweenCount];
             m_Handles = new TweenHandle[m_MaxTweenCount];
+            
+            if (Application.isPlaying)
+                DontDestroyOnLoad(gameObject);
         }
 
         void Update()
@@ -117,7 +122,8 @@ namespace EnvDev
 
         void OnDestroy()
         {
-            s_Instance = null;
+            if (s_Instance == this)
+                s_Instance = null;
         }
     }
 
