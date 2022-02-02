@@ -39,6 +39,11 @@ namespace EnvDev
             return UpdateFunc.Invoke(this, dt);
         }
 
+        public static Tween Custom(Action<float> lerpFunc, float duration, Func<double, double> easeFunc)
+        {
+            return new Tween(UpdateTween, lerpFunc, 0f, duration, easeFunc, null);
+        }
+
         public static Tween Wait(float duration)
         {
             return new Tween(t => { }, duration, d => d);
