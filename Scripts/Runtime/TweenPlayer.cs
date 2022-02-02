@@ -53,15 +53,19 @@ namespace EnvDev
             if (!handle.IsPlaying)
                 return false;
 
-            var tweenIndex = handle.TweenIndex;
-            handle.TweenIndex = -1;
-            StopTween(tweenIndex);
-            
+            handle.OnInterruptedAction?.Invoke();
+            StopTween(handle);
             return true;
         }
 
-        void StopTween(int tweenIndex)
+        void StopTween(TweenHandle handle)
         {
+            if (!handle.IsPlaying)
+                return;
+            
+            var tweenIndex = handle.TweenIndex;
+            handle.TweenIndex = -1;
+            
             if (tweenIndex >= m_TweenCount)
                 return;
 
@@ -78,6 +82,8 @@ namespace EnvDev
             m_Tweens[tweenIndex] = m_Tweens[lastTweenIndex];
             m_Handles[tweenIndex] = lastTweenHandle;
             m_TweenCount--;
+            
+            handle.OnStoppedAction?.Invoke();
         }
 
         private void Awake()
@@ -104,14 +110,11 @@ namespace EnvDev
             {
                 var tween = m_Tweens[i];
                 tween = tween.Update(dt);
-                if (tween.Runtime >= tween.Duration)
+                if (tween.Runtime > tween.Duration)
                 {
                     var handle = m_Handles[i];
-                    handle.TweenIndex = -1;
-
-                    StopTween(i);
-
                     handle.OnCompletedAction?.Invoke();
+                    StopTween(handle);
                 }
                 else
                 {
@@ -135,6 +138,8 @@ namespace EnvDev
         internal int TweenIndex;
 
         public Action OnCompletedAction;
+        public Action OnInterruptedAction;
+        public Action OnStoppedAction;
 
 
         public TweenHandle(int tweenIndex)
@@ -151,6 +156,18 @@ namespace EnvDev
         public ITweenHandle OnCompleted(Action action)
         {
             OnCompletedAction = action;
+            return this;
+        }
+
+        public ITweenHandle OnInterrupted(Action action)
+        {
+            OnInterruptedAction = action;
+            return this;
+        }
+
+        public ITweenHandle OnStopped(Action action)
+        {
+            OnStoppedAction = action;
             return this;
         }
     }
