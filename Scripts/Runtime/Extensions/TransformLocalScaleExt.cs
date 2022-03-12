@@ -57,6 +57,14 @@ namespace EnvDev
             var startValue = transform.localScale;
             return TweenLocalScale(transform, startValue, targetScale, duration, easeFunc);
         }
+        
+        public static Tween TweenLocalScaleUniformly(this Transform transform, float from, float to, float duration,
+            Func<double, double> easeFunc)
+        {
+            var startValue = new Vector3(from, from, from);
+            var targetValue = new Vector3(to, to, to);
+            return TweenLocalScale(transform, startValue, targetValue, duration, easeFunc);
+        }
 
         public static Tween TweenLocalScale(this Transform transform, Vector3 from, Vector3 to,
             float duration, Func<double, double> easeFunc)
