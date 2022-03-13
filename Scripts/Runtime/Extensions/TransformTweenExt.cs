@@ -74,8 +74,7 @@ namespace EnvDev
         }
 
         #endregion
-        
-        
+
         #region Z
 
         public static Tween TweenLocalAnglesZTo(this Transform transform, float to, float duration,
@@ -85,13 +84,21 @@ namespace EnvDev
             return TweenLocalAnglesZ(transform, from, to, duration, easeFunc);
         }
         
+        public static Tween TweenLocalAnglesZBy(this Transform transform, float amount, float duration,
+            Func<double, double> easeFunc)
+        {
+            var from = transform.localEulerAngles.z;
+            var to = from + amount;
+            return TweenLocalAnglesZ(transform, from, to, duration, easeFunc);
+        }
+        
         public static Tween TweenLocalAnglesZ(this Transform transform, float from,
             float to, float duration, Func<double, double> easeFunc)
         {
             return new Tween(
                 t =>
                 {
-                    var z = LerpAngleUnclamped(from, to, t);
+                    var z = Mathf.LerpUnclamped(from, to, t);
                     var angles = transform.localEulerAngles;
                     angles.z = z;
                     transform.localEulerAngles = angles;
