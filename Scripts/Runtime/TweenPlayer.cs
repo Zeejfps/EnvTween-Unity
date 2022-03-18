@@ -61,18 +61,17 @@ namespace EnvDev
             if (!handle.IsPlaying)
                 return;
             
-            handle.OnStoppedAction?.Invoke();
-
             var tweenIndex = handle.TweenIndex;
             handle.TweenIndex = -1;
             
-            if (tweenIndex >= m_TweenCount)
+            if (tweenIndex >= m_TweenCount || tweenIndex >= m_Tweens.Length || tweenIndex < 0)
                 return;
 
             var lastTweenIndex = m_TweenCount - 1;
-            if (m_TweenCount == 1 || lastTweenIndex == tweenIndex)
+            if (m_TweenCount == 1 || tweenIndex == lastTweenIndex)
             {
                 m_TweenCount--;
+                handle.OnStoppedAction?.Invoke();
                 return;
             }
 
@@ -82,6 +81,8 @@ namespace EnvDev
             m_Tweens[tweenIndex] = m_Tweens[lastTweenIndex];
             m_Handles[tweenIndex] = lastTweenHandle;
             m_TweenCount--;
+            
+            handle.OnStoppedAction?.Invoke();
         }
 
         private void Awake()
