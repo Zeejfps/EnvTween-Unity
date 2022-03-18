@@ -37,10 +37,8 @@ namespace EnvDev
         {
             var tweenIndex = m_TweenCount;
             if (tweenIndex >= m_MaxTweenCount)
-            {
-                Debug.LogWarning("Max Tween Count Reached! Please adjust the value if you require more tweens.");
-                return new TweenHandle(-1);
-            }
+                throw new Exception("Max Tween Count Reached! Please adjust the value if you require more tweens.");
+            
             var handle = new TweenHandle(tweenIndex);
             m_Tweens[tweenIndex] = tween;
             m_Handles[tweenIndex] = handle;
